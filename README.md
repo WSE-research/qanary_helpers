@@ -1,2 +1,2 @@
-# qanary_helpers
+# Qanary Helpers library
 Qanary Helpers

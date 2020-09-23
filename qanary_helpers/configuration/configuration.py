@@ -15,7 +15,7 @@ class Configuration:
         self.configfile = configfile
         if os.path.exists(self.configfile):
             self.demandedConfigurationKeys = demandedConfigurationKeys
-            self.integrateDataFromConfigfile()
+            self.integrate_data_from_configfile()
         else:
             logging.error("config file '%s' not found" % (configfile))
             raise Exception(

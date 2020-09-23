@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="qanary-helpers-PEREVALOV_A",
-    version="0.0.2",
+    version="0.0.5",
     author="Andreas Both, Aleksandr Perevalov",
     author_email="andreas.both@hs-anhalt.de, aleksandr.perevalov@hs-anhalt.de",
     description="A package that helps to build components for the Qanary framework",

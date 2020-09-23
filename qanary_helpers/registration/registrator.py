@@ -30,7 +30,7 @@ class Registrator(threading.Thread):
 
     def run(self):
         while True:
-            self.callAdminServer()
+            self.call_admin_server()
             time.sleep(self.interval)
 
     def call_admin_server(self):

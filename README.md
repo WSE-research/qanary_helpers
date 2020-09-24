@@ -1,4 +1,6 @@
 # Qanary Helpers library
+[![PyPI](https://img.shields.io/pypi/v/qanary-helpers.svg)](https://pypi.org/project/qanary-helpers/) 
+
 Qanary Helpers implements registration and configuration functionality for [the Qanary framework](https://github.com/WDAqua/Qanary).
 
 Typically, this library is used within a Qanary component written in Python. Examples of how to use the library are given below.

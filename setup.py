@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="qanary-helpers-PEREVALOV_A",
+    name="qanary-helpers",
     version="0.0.7",
     author="Andreas Both, Aleksandr Perevalov",
     author_email="andreas.both@hs-anhalt.de, aleksandr.perevalov@hs-anhalt.de",

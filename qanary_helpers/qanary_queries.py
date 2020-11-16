@@ -11,22 +11,24 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
     """
         retrieves the questions from the triplestore returns an array
     """
-    questions = []
+
+    questions = list()
     query = """
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         SELECT (?s AS ?questionURI) (URI(CONCAT(STR(?s),"/raw")) AS ?questionURIraw)
-        FROM <%s> 
-        WHERE {
+        FROM <{uri}> 
+        WHERE {{
             ?s ?p ?o . 
             ?s rdf:type <http://www.wdaqua.eu/qa#Question> .
-        }
-    """ % graph
+        }}
+    """.format(uri=graph)
+
     results = select_from_triplestore(triplestore_endpoint, graph, query)
     for result in results["results"]["bindings"]:
-        logging.info("found: questionURI=%s  questionURIraw=%s" % (result['questionURI']['value'], result['questionURIraw']['value']) )
-        questionText = requests.get(result['questionURIraw']['value'])
-        logging.info("found question: \""+questionText.text+"\"")
-        questions.append({"uri": result['questionURI']['value'], "text": questionText.text})
+        logging.info("found: questionURI={0}  questionURIraw={1}".format(result['questionURI']['value'], result['questionURIraw']['value']))
+        question_text = requests.get(result['questionURIraw']['value'].replace("localhost", urlparse(triplestore_endpoint).hostname))
+        logging.info("found question: \"{0}\"".format(question_text.text))
+        questions.append({"uri": result['questionURI']['value'], "text": question_text.text})
     
     pprint(questions)
     return questions

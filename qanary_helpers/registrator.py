@@ -21,6 +21,7 @@ class Registrator(threading.Thread):
 
     def __init__(self, adminServerURL, adminServerUser, adminServerPassword, registration, interval=10):
         threading.Thread.__init__(self)
+        self.quit_flag = False
         self.adminServerURL = adminServerURL + "/instances"
         self.adminServerUser = adminServerUser
         self.adminServerPassword = adminServerPassword
@@ -29,7 +30,7 @@ class Registrator(threading.Thread):
         logging.basicConfig(level=logging.DEBUG)
 
     def run(self):
-        while True:
+        while not self.quit_flag:
             self.call_admin_server()
             time.sleep(self.interval)
 

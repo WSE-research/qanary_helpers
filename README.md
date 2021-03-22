@@ -1,5 +1,6 @@
 # Qanary Helpers library
-[![PyPI](https://img.shields.io/pypi/v/qanary-helpers.svg)](https://pypi.org/project/qanary-helpers/) 
+[![PyPI](https://img.shields.io/pypi/v/qanary-helpers.svg)](https://pypi.org/project/qanary-helpers/)
+[![Python package](https://github.com/Perevalov/qanary_helpers/actions/workflows/python-tests.yml/badge.svg)](https://github.com/Perevalov/qanary_helpers/actions/workflows/python-tests.yml)
 
 Qanary Helpers implements registration and configuration functionality for [the Qanary framework](https://github.com/WDAqua/Qanary).
 

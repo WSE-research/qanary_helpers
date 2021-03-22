@@ -3,7 +3,7 @@ import os
 
 
 def test_configuration():
-    configuration = Configuration(os.path.join("configs", "app.conf"),
+    configuration = Configuration(os.path.join(os.getcwd(), "tests", "configs", "app.conf"),  # works if executed with pytest
         [
             'springbootadminserverurl',
             'springbootadminserveruser',

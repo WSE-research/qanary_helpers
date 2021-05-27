@@ -1,8 +1,7 @@
-
 class Registration:
     """
-        a similar implementation of the corresponding Spring Boot Admin class
-        c.f,. https://github.com/codecentric/spring-boot-admin/blob/master/spring-boot-admin-server/src/main/java/de/codecentric/boot/admin/server/domain/values/Registration.java
+    A similar implementation of the corresponding Spring Boot Admin class
+    c.f,. https://github.com/codecentric/spring-boot-admin/blob/master/spring-boot-admin-server/src/main/java/de/codecentric/boot/admin/server/domain/values/Registration.java
     """
 
     name = None

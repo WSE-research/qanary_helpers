@@ -111,14 +111,14 @@ if __name__ == "__main__":
     reg_thread.setDaemon(True)
     reg_thread.start()
 
-    app.run(host=SERVICE_HOST, port=SERVICE_PORT, debug=True)
+    app.run(host='0.0.0.0', port=SERVICE_PORT, debug=True)
 ```
 
 As you may see, several environment variables has to be set before the script execution:
 * `SPRING_BOOT_ADMIN_URL` -- URL of the Qanary pipeline (see Step 1 and Step 2 of the [tutorial](https://github.com/WDAqua/Qanary/wiki/Qanary-tutorial:-How-to-build-a-trivial-Question-Answering-pipeline))
 * `SPRING_BOOT_ADMIN_USERNAME` -- the admin username of the Qanary pipeline
 * `SPRING_BOOT_ADMIN_PASSWORD` -- the admin password of the Qanary pipeline
-* `SERVICE_HOST` -- the host of your component (has to be visible to the Qanary pipeline)
+* `SERVICE_HOST` -- the host of your component without protocol prefix (e.g. `http://`). It has to be visible to the Qanary pipeline
 * `SERVICE_PORT` -- the port of your component (has to be visible to the Qanary pipeline)
 * `SERVICE_NAME_COMPONENT` -- the name of your component
 * `SERVICE_DESCRIPTION_COMPONENT` -- the description of your component

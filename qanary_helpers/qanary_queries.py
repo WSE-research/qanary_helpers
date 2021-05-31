@@ -25,7 +25,7 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
         }}
     """.format(uri=graph)
 
-    results = select_from_triplestore(triplestore_endpoint, graph, query)
+    results = select_from_triplestore(triplestore_endpoint, query)
     for result in results["results"]["bindings"]:
         logging.info("found: questionURI={0}  questionURIraw={1}".format(
             result['questionURI']['value'],

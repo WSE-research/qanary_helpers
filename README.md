@@ -66,7 +66,7 @@ def qanary_service():
                     PREFIX dbo: <http://dbpedia.org/ontology/>
                     INSERT {{
                     GRAPH <{uuid}> {{
-                        ?a oa:annotationText <{annotation_text}> .
+                        ?a oa:annotationText "{annotation_text}" .
                         ?a oa:annotatedBy <urn:qanary:{component}> .
                         ?a oa:annotatedAt ?time .
                         }}
@@ -77,10 +77,10 @@ def qanary_service():
                     }}
                 """.format(
                     uuid=triplestore_ingraph_uuid,
-                    component=SERVICE_NAME_COMPONENT,
+                    component=SERVICE_NAME_COMPONENT.replace(" ", "-"),
                     annotation_text=result)
 
-    insert_into_triplestore(triplestore_endpoint_url, triplestore_ingraph_uuid,
+    insert_into_triplestore(triplestore_endpoint_url,
                             SPARQLquery)  # inserting new data to the triplestore
     # End TODO
 

@@ -29,14 +29,14 @@ class Registrator(threading.Thread):
         logging.basicConfig(level=logging.DEBUG)
 
     def run(self):
-        while not self.stopped():
+        while not self.is_stopped():
             self.call_admin_server()
             time.sleep(self.interval)
 
     def stop(self):
         self._stop_event.set()
 
-    def stopped(self):
+    def is_stopped(self):
         return self._stop_event.is_set()
 
     def call_admin_server(self):

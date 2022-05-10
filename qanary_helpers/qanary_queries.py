@@ -75,14 +75,23 @@ def query_triplestore(triplestore_endpoint, sparql_query):
     """
     triplestore_endpoint_parsed = urlparse(triplestore_endpoint)
     triplestore_endpoint_parsed_split = re.split("^(\w+):(\w+)@(.*)$", triplestore_endpoint_parsed.netloc)
-    username = triplestore_endpoint_parsed_split[1]
-    password = triplestore_endpoint_parsed_split[2]
-    triplestore_endpoint_new = triplestore_endpoint_parsed.scheme + "://" + triplestore_endpoint_parsed_split[3] + \
-                               triplestore_endpoint_parsed.path
-    logging.info("found: endpoint=%s,  username=%s,  password=%s" % (triplestore_endpoint_new, username, password))
+    if len(triplestore_endpoint_parsed_split) > 1:
+        # qanary v2 and lower
+        username = triplestore_endpoint_parsed_split[1]
+        password = triplestore_endpoint_parsed_split[2]
+        triplestore_endpoint_new = triplestore_endpoint_parsed.scheme + "://" + triplestore_endpoint_parsed_split[3] + \
+                                triplestore_endpoint_parsed.path
+        sparql = SPARQLWrapper(triplestore_endpoint_new)
+        sparql.setCredentials(username, password)
+        logging.info("found: endpoint=%s,  username=%s,  password=%s" % (triplestore_endpoint_new, username, password))
+    else:
+        # qanary v3
+        triplestore_endpoint_new = triplestore_endpoint.replace("/query", "").replace("/update", "")
+        sparql = SPARQLWrapper(triplestore_endpoint_new)
+        logging.info("found: endpoint=%s" % triplestore_endpoint_new)
+
     logging.info("execute SPARQL query:\n%s" % sparql_query)
-    sparql = SPARQLWrapper(triplestore_endpoint_new)
-    sparql.setCredentials(username, password)
+    
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat(JSON)
     sparql.setMethod("POST")

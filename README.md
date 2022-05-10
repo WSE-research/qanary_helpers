@@ -55,7 +55,8 @@ def qanary_service():
     triplestore_endpoint_url = request.json["values"]["urn:qanary#endpoint"]
     triplestore_ingraph_uuid = request.json["values"]["urn:qanary#inGraph"]
     
-    question_text = get_text_question_in_graph(triplestore_endpoint_url, triplestore_ingraph_uuid)
+    question_text = get_text_question_in_graph(triplestore_endpoint_url, triplestore_ingraph_uuid)[0]['text']
+    question_uri = get_text_question_in_graph(triplestore_endpoint_url, triplestore_ingraph_uuid)[0]['uri']
 
     # Start TODO: configure your business logic here and adjust the sparql query
     result = "Hello World"

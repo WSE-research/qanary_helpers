@@ -1,35 +1,3 @@
-# Qanary Helpers library
-[![PyPI](https://img.shields.io/pypi/v/qanary-helpers.svg)](https://pypi.org/project/qanary-helpers/)
-[![Tests](https://github.com/Perevalov/qanary_helpers/actions/workflows/python-tests.yml/badge.svg)](https://github.com/Perevalov/qanary_helpers/actions/workflows/python-tests.yml)
-![Downloads](https://img.shields.io/pypi/dm/qanary_helpers)
-![Repo size](https://img.shields.io/github/repo-size/perevalov/qanary_helpers)
-
-Qanary Helpers implements registration and querying functionality for [the Qanary framework](https://github.com/WDAqua/Qanary).
-
-This library is used within a Python Qanary Component.
-
-## Install
-
-### Via PIP
-
-```bash
-pip install qanary_helpers
-```
-
-### Latest version from GitHub
-
-```bash
-git clone https://github.com/Perevalov/qanary_helpers.git
-cd qanary_helpers
-pip install .
-```
-
-## Usage
-
-For the "Hello world example" create a file named `component.py` in your working directory. Then, fill the file with the
-following code (pay attention to the `TODO` comments):
-
-```python
 import os
 from datetime import datetime
 from fastapi import FastAPI, Request
@@ -137,18 +105,3 @@ reg_thread.start()
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(SERVICE_PORT))
-```
-
-As you may see, several environment variables has to be set before the script execution:
-* `SPRING_BOOT_ADMIN_URL` -- URL of the Qanary pipeline (see Step 1 and Step 2 of the [tutorial](https://github.com/WDAqua/Qanary/wiki/Qanary-tutorial:-How-to-build-a-trivial-Question-Answering-pipeline))
-* `SPRING_BOOT_ADMIN_USERNAME` -- the admin username of the Qanary pipeline
-* `SPRING_BOOT_ADMIN_PASSWORD` -- the admin password of the Qanary pipeline
-* `SERVICE_HOST` -- the host of your component without protocol prefix (e.g. `http://`). It has to be visible to the Qanary pipeline
-* `SERVICE_PORT` -- the port of your component (has to be visible to the Qanary pipeline)
-* `SERVICE_NAME_COMPONENT` -- the name of your component
-* `SERVICE_DESCRIPTION_COMPONENT` -- the description of your component
-
-You may also change the configuration via environment variables to any configuration that you want (e.g. via a `json` file).
-
-To run the component, simply execute `python component.py` in your terminal. 
-If the component registration was successful, a corresponding message will appear in the output.

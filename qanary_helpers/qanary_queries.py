@@ -2,7 +2,6 @@ import logging
 from SPARQLWrapper import SPARQLWrapper, JSON
 import requests
 from urllib.parse import urlparse
-from pprint import pprint
 import re
 
 
@@ -37,7 +36,6 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
         logging.info("found question: \"{0}\"".format(question_text.text))
         questions.append({"uri": result['questionURI']['value'], "text": question_text.text})
     
-    pprint(questions)
     return questions
 
 
@@ -86,7 +84,8 @@ def query_triplestore(triplestore_endpoint, sparql_query):
         logging.info("found: endpoint=%s,  username=%s,  password=%s" % (triplestore_endpoint_new, username, password))
     else:
         # qanary v3
-        triplestore_endpoint_new = triplestore_endpoint.replace("/query", "").replace("/update", "")
+        triplestore_endpoint_new = re.sub('/query$', '', triplestore_endpoint)
+        triplestore_endpoint_new = re.sub('/update$', '', triplestore_endpoint)
         sparql = SPARQLWrapper(triplestore_endpoint_new)
         logging.info("found: endpoint=%s" % triplestore_endpoint_new)
 

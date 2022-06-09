@@ -5,7 +5,7 @@ clean:
 	rm -f *.pyc */*.pyc
 
 install:
-	python -m build
+	python3 setup.py sdist bdist_wheel
 
 test:
 	pytest

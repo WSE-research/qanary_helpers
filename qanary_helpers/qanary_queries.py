@@ -85,7 +85,7 @@ def query_triplestore(triplestore_endpoint, sparql_query):
     else:
         # qanary v3
         triplestore_endpoint_new = re.sub('/query$', '', triplestore_endpoint)
-        triplestore_endpoint_new = re.sub('/update$', '', triplestore_endpoint)
+        triplestore_endpoint_new = re.sub('/update$', '', triplestore_endpoint_new)
         sparql = SPARQLWrapper(triplestore_endpoint_new)
         logging.info("found: endpoint=%s" % triplestore_endpoint_new)
 

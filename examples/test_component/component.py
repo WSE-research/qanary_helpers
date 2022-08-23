@@ -32,7 +32,7 @@ async def qanary_service(request: Request):
     
     # get question text from triplestore
     question_text = get_text_question_in_graph(triplestore_endpoint_url, triplestore_ingraph_uuid)[0]['text']
-
+    question_uri = get_text_question_in_graph(triplestore_endpoint=triplestore_endpoint_url, graph=triplestore_ingraph_uuid)[0]['uri']
     # Start TODO: configure your business logic here and adjust the sparql query
     
     # here we simulate that our component created this sparql query:
@@ -67,7 +67,7 @@ async def qanary_service(request: Request):
                     }}
                 """.format(
                     uuid=triplestore_ingraph_uuid,
-                    question_uri=triplestore_endpoint_url,
+                    question_uri=question_uri,
                     component=SERVICE_NAME_COMPONENT.replace(" ", "-"),
                     sparql_query=sparql_query.replace("\n", "\\n").replace("\"", "\\\""))
 

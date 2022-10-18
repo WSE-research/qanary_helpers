@@ -13,8 +13,8 @@ class QanaryComponentLogger(ABC):
     Class providing a Logging interface for Qanary components
     """
     @abstractmethod
-    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: dict[str, Any],
-                          metrics: dict[str, float], component_name: str, component_type: str, hardware: str,
+    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: Dict[str, Any],
+                          metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         """
         Logging train results of the Qanary component
@@ -75,8 +75,8 @@ class MLFlowLogger(QanaryComponentLogger):
         if use_sftp:
             load_ssh_host_key(ssh_host, ssh_port)
 
-    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: dict[str, Any],
-                          metrics: dict[str, float], component_name: str, component_type: str, hardware: str,
+    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: Dict[str, Any],
+                          metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         mlflow.set_experiment('AutoML Model Training')
 
@@ -112,7 +112,7 @@ class MLFlowLogger(QanaryComponentLogger):
 
             return run.info.run_id
 
-    def log_test_results(self, questions: list[dict[str, Any]]) -> Any:
+    def log_test_results(self, questions: List[Dict[str, Any]]) -> Any:
         mlflow.set_experiment('AutoML Model Testing')
 
         run_ids = []

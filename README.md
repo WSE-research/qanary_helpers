@@ -113,7 +113,7 @@ async def qanary_service(request: Request):
     
     # logging the annotation of the component
     # TODO: replace "sparql_query" with your annotation data
-    logger.log_annotation(SERVICE_NAME_COMPONENT, question_text, '', sparql_query, triplestore_ingraph_uuid)
+    logger.log_annotation(SERVICE_NAME_COMPONENT, question_text, sparql_query, triplestore_ingraph_uuid)
     
     # End TODO
 

@@ -1,6 +1,6 @@
 import os
 import mlflow
-from .config import mlflow_uri, test_params, sftp, mlflow_host, mlflow_port_artifact
+from .config import mlflow_uri, test_params, sftp, mlflow_host, mlflow_port_artifact, test_dicts
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Union
 from uuid import uuid4
@@ -13,15 +13,16 @@ class QanaryComponentLogger(ABC):
     Class providing a Logging interface for Qanary components
     """
     @abstractmethod
-    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: Dict[str, Any],
+    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: str,
                           metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         """
         Logging train results of the Qanary component
 
-        :param docker_image_tag: used docker image and tag
+        :param model_uuid: UUID of the trained model
         :param dataset: train data as text file content
         :param hyperparameters: dictionary of [hyperparameter_name, value] pairs
+        :param config: model config as string
         :param metrics: dictionary of [metric_name, value] pairs
         :param component_name: name of the Qanary component
         :param component_type: type of the Qanary component
@@ -42,14 +43,12 @@ class QanaryComponentLogger(ABC):
         """
 
     @abstractmethod
-    def log_annotation(self, docker_image_tag: str, question: str, true_target: str,
-                       predicted_target: str, qanary_graph_id: str) -> Any:
+    def log_annotation(self, model_uuid: str, question: str, predicted_target: str, qanary_graph_id: str) -> Any:
         """
         Logging the data of the created annotation of a Qanary component
 
-        :param docker_image_tag: used docker image and tag
+        :param model_uuid: UUID of the used model
         :param question: question as string data
-        :param true_target: expected true target
         :param predicted_target: target predicted by the component
         :param qanary_graph_id: Qanary Graph ID of the annotation
         :return: Identifier for the logged annotation data
@@ -75,7 +74,7 @@ class MLFlowLogger(QanaryComponentLogger):
         if use_sftp:
             load_ssh_host_key(ssh_host, ssh_port)
 
-    def log_train_results(self, docker_image_tag: str, dataset: str, hyperparameters: Dict[str, Any],
+    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: str,
                           metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         mlflow.set_experiment('AutoML Model Training')
@@ -92,7 +91,7 @@ class MLFlowLogger(QanaryComponentLogger):
         with mlflow.start_run() as run:
             # Log train parameters and model results
             try:
-                mlflow.log_param('docker_image_tag', docker_image_tag)
+                mlflow.log_param('model_uuid', model_uuid)
                 mlflow.log_artifact(temp_dataset, 'datasets')
 
                 for parameter in hyperparameters:
@@ -101,6 +100,7 @@ class MLFlowLogger(QanaryComponentLogger):
                 for metric in metrics:
                     mlflow.log_metric(metric, metrics[metric])
 
+                mlflow.log_param('config', config)
                 mlflow.log_param('component_name', component_name)
                 mlflow.log_param('component_type', component_type)
                 mlflow.log_param('hardware', hardware)
@@ -123,18 +123,19 @@ class MLFlowLogger(QanaryComponentLogger):
                 for test_param in test_params:
                     mlflow.log_param(test_param, question[test_param])
 
+                for test_dict in test_dicts:
+                    mlflow.log_dict(question[test_dict], f'{test_dict}.json')
+
                 run_ids.append(run.info.run_id)
 
         return run_ids
 
-    def log_annotation(self, docker_image_tag: str, question: str, true_target: str, predicted_target: str,
-                       qanary_graph_id: str) -> Any:
+    def log_annotation(self, model_uuid: str, question: str, predicted_target: str, qanary_graph_id: str) -> Any:
         mlflow.set_experiment('AutoML Component Annotations')
 
         with mlflow.start_run() as run:
-            mlflow.log_param('docker_image_tag', docker_image_tag)
+            mlflow.log_param('model_uuid', model_uuid)
             mlflow.log_param('input', question)
-            mlflow.log_param('true_target', true_target)
             mlflow.log_param('predicted_target', predicted_target)
             mlflow.log_param('qanary_graph_id', qanary_graph_id)
 

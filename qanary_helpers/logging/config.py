@@ -6,6 +6,7 @@ ssl = False
 
 sftp = False
 
-test_params = ['input', 'true_target', 'predicted_target', 'docker_image_tag', 'runtime']
+test_params = ['input', 'model_uuid', 'runtime']
+test_dicts = ['true_target', 'predicted_target']
 
 mlflow_uri = f'http{"s" if ssl else ""}://{mlflow_host}:{mlflow_port}'

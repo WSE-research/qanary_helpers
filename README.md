@@ -38,7 +38,8 @@ import uvicorn
 
 from qanary_helpers.registration import Registration
 from qanary_helpers.registrator import Registrator
-from qanary_helpers.qanary_queries import insert_into_triplestore, get_text_question_in_graph, query_triplestore
+from qanary_helpers.qanary_queries import insert_into_triplestore, get_text_question_in_graph
+from qanary_helpers.logging import MLFlowLogger
 
 if not os.getenv("PRODUCTION"):
     from dotenv import load_dotenv
@@ -105,6 +106,15 @@ async def qanary_service(request: Request):
 
     insert_into_triplestore(triplestore_endpoint_url,
                             SPARQLquery)  # inserting new data to the triplestore
+    
+    # Initializing logging with MLFlow
+    # TODO: Update connection settings, if necessary
+    logger = MLFlowLogger()
+    
+    # logging the annotation of the component
+    # TODO: replace "sparql_query" with your annotation data
+    logger.log_annotation(SERVICE_NAME_COMPONENT, question_text, '', sparql_query, triplestore_ingraph_uuid)
+    
     # End TODO
 
     return JSONResponse(content=request_json)

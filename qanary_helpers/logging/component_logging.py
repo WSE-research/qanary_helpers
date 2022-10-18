@@ -2,7 +2,7 @@ import os
 import mlflow
 from .config import mlflow_uri, test_params, sftp, mlflow_host, mlflow_port_artifact
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, List, Union
 from uuid import uuid4
 from shutil import rmtree
 from .get_ssh_key import load_ssh_host_key
@@ -32,7 +32,7 @@ class QanaryComponentLogger(ABC):
         """
 
     @abstractmethod
-    def log_test_results(self, questions: list[dict[str, str | float]]) -> Any:
+    def log_test_results(self, questions: List[Dict[str, Union[str, float]]]) -> Any:
         """
         Logging test results for all test questions. Each question dictionary requires the keys
         "input", "true_target", "predicted_target", "docker_image_tag" and "runtime"

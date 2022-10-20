@@ -16,7 +16,7 @@ class QanaryComponentLogger(ABC):
     Class providing a Logging interface for Qanary components
     """
     @abstractmethod
-    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: str,
+    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: Dict[str, Any],
                           metrics: Dict[str, Any], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         """
@@ -25,7 +25,7 @@ class QanaryComponentLogger(ABC):
         :param model_uuid: UUID of the trained model
         :param dataset: train data as text file content
         :param hyperparameters: dictionary of [hyperparameter_name, value] pairs
-        :param config: model config as string
+        :param config: model config as dictionary
         :param metrics: dictionary of [metric_name, value] pairs
         :param component_name: name of the Qanary component
         :param component_type: type of the Qanary component
@@ -77,7 +77,7 @@ class MLFlowLogger(QanaryComponentLogger):
         if use_sftp:
             load_ssh_host_key(ssh_host, ssh_port)
 
-    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: str,
+    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: Dict[str, Any],
                           metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         mlflow.set_experiment('AutoML Model Training')

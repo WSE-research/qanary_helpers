@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
             dataset = f.read()
 
         run_id = self.logger.log_train_results('test:latest', dataset, {'C': 0.5, 'balance': 'weighted'},
-                                               'special config', {'acc': 0.9, 'F1': 0.7}, 'basic_component', 'NED',
+                                               {'param1': 3}, {'acc': 0.9, 'F1': 0.7}, 'basic_component', 'NED',
                                                'CPU', 'SVM', 17.4597)
 
         run = mlflow.get_run(run_id)
@@ -34,7 +34,10 @@ class MyTestCase(unittest.TestCase):
         metrics = mlflow.artifacts.load_dict(f'{run.info.artifact_uri}/model_metrics.json')
         self.assertEqual(2, len(metrics))
 
-        self.assertEqual(9, len(run.data.params))
+        config = mlflow.artifacts.load_dict(f'{run.info.artifact_uri}/config.json')
+        self.assertEqual(1, len(config))
+
+        self.assertEqual(8, len(run.data.params))
         self.assertEqual('test:latest', run.data.params['model_uuid'])
         self.assertEqual('CPU', run.data.params['hardware'])
 

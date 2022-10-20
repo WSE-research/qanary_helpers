@@ -6,6 +6,9 @@ from typing import Any, Dict, List, Union
 from uuid import uuid4
 from shutil import rmtree
 from .get_ssh_key import load_ssh_host_key
+import logging
+
+logging.getLogger("paramiko").setLevel(logging.WARNING)
 
 
 class QanaryComponentLogger(ABC):

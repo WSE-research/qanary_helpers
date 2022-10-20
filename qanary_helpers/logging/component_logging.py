@@ -101,8 +101,7 @@ class MLFlowLogger(QanaryComponentLogger):
                     mlflow.log_param(parameter, hyperparameters[parameter])
 
                 mlflow.log_dict(metrics, 'model_metrics.json')
-
-                mlflow.log_param('config', config)
+                mlflow.log_dict(config, 'config.json')
                 mlflow.log_param('component_name', component_name)
                 mlflow.log_param('component_type', component_type)
                 mlflow.log_param('hardware', hardware)

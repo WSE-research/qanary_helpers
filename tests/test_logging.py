@@ -31,11 +31,12 @@ class MyTestCase(unittest.TestCase):
 
         self.assertEqual(dataset, artifact_data)
 
-        self.assertEqual(2, len(run.data.metrics))
+        metrics = mlflow.artifacts.load_dict(f'{run.info.artifact_uri}/model_metrics.json')
+        self.assertEqual(2, len(metrics))
+
         self.assertEqual(9, len(run.data.params))
         self.assertEqual('test:latest', run.data.params['model_uuid'])
         self.assertEqual('CPU', run.data.params['hardware'])
-        self.assertEqual(0.9, run.data.metrics['acc'])
 
     def test_test_logging(self):
         run_ids = self.logger.log_test_results([

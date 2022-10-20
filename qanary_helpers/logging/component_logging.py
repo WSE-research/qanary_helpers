@@ -17,7 +17,7 @@ class QanaryComponentLogger(ABC):
     """
     @abstractmethod
     def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: str,
-                          metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
+                          metrics: Dict[str, Any], component_name: str, component_type: str, hardware: str,
                           model: str, time: float) -> Any:
         """
         Logging train results of the Qanary component
@@ -100,8 +100,7 @@ class MLFlowLogger(QanaryComponentLogger):
                 for parameter in hyperparameters:
                     mlflow.log_param(parameter, hyperparameters[parameter])
 
-                for metric in metrics:
-                    mlflow.log_metric(metric, metrics[metric])
+                mlflow.log_dict(metrics, 'model_metrics.json')
 
                 mlflow.log_param('config', config)
                 mlflow.log_param('component_name', component_name)

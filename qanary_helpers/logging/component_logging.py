@@ -39,7 +39,7 @@ class QanaryComponentLogger(ABC):
     def log_test_results(self, questions: List[Dict[str, Union[str, float]]]) -> Any:
         """
         Logging test results for all test questions. Each question dictionary requires the keys
-        "input", "true_target", "predicted_target", "docker_image_tag" and "runtime"
+        "input", "true_target", "predicted_target", "model_uuid" and "runtime"
 
         :param questions: list of parameters that have to be logged for each question
         :return: Identifier for the logged test results
@@ -85,7 +85,7 @@ class MLFlowLogger(QanaryComponentLogger):
         temp_path = str(uuid4())
         os.mkdir(temp_path)
 
-        temp_dataset = f'{temp_path}/dataset.csv'
+        temp_dataset = f'{temp_path}/dataset.txt'
 
         # store dataset to filesystem
         with open(temp_dataset, 'w') as f:

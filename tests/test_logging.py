@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
 
         run = mlflow.get_run(run_id)
 
-        artifact = mlflow.artifacts.download_artifacts(run_id=run_id, artifact_path='datasets/dataset.csv')
+        artifact = mlflow.artifacts.download_artifacts(run_id=run_id, artifact_path='datasets/dataset.txt')
 
         with open(artifact) as f:
             artifact_data = f.read()

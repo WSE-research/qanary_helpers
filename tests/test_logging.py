@@ -2,16 +2,20 @@ import unittest
 from qanary_helpers.logging import MLFlowLogger
 import mlflow
 import os
+from subprocess import Popen
 
 
 class MyTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.logger = MLFlowLogger(os.environ['MLFLOW_URI'], True, os.environ['MLFLOW_HOST'],
-                                   os.environ['MLFLOW_PORT_ARTIFACT'])
+        self.mlflow_server = Popen(['mlflow', 'server', '--host', '0.0.0.0'])
+
+        self.logger = MLFlowLogger()
         with open('dataset.csv', 'w') as f:
             f.write('test1,test2\n0,1\n2,3')
 
     def tearDown(self) -> None:
+        self.mlflow_server.kill()
+        self.mlflow_server.wait()
         os.remove('dataset.csv')
 
     def test_train_logging(self):

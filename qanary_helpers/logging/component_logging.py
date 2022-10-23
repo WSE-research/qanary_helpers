@@ -16,14 +16,15 @@ class QanaryComponentLogger(ABC):
     Class providing a Logging interface for Qanary components
     """
     @abstractmethod
-    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: Dict[str, Any],
-                          metrics: Dict[str, Any], component_name: str, component_type: str, hardware: str,
-                          model: str, time: float) -> Any:
+    def log_train_results(self, model_uuid: str, train_data: str, test_data: str, hyperparameters: Dict[str, Any],
+                          config: Dict[str, Any], metrics: Dict[str, Any], component_name: str, component_type: str,
+                          hardware: str, model: str, time: float) -> Any:
         """
         Logging train results of the Qanary component
 
         :param model_uuid: UUID of the trained model
-        :param dataset: train data as text file content
+        :param train_data: train dataset of the Qanary component
+        :param test_data: test dataset of the Qanary component
         :param hyperparameters: dictionary of [hyperparameter_name, value] pairs
         :param config: model config as dictionary
         :param metrics: dictionary of [metric_name, value] pairs
@@ -77,25 +78,32 @@ class MLFlowLogger(QanaryComponentLogger):
         if use_sftp:
             load_ssh_host_key(ssh_host, ssh_port)
 
-    def log_train_results(self, model_uuid: str, dataset: str, hyperparameters: Dict[str, Any], config: Dict[str, Any],
-                          metrics: Dict[str, float], component_name: str, component_type: str, hardware: str,
-                          model: str, time: float) -> Any:
+    def log_train_results(self, model_uuid: str, train_data: str, test_data: str, hyperparameters: Dict[str, Any],
+                          config: Dict[str, Any], metrics: Dict[str, float], component_name: str, component_type: str,
+                          hardware: str, model: str, time: float) -> Any:
         mlflow.set_experiment('AutoML Model Training')
 
         temp_path = str(uuid4())
         os.mkdir(temp_path)
 
-        temp_dataset = f'{temp_path}/dataset.txt'
+        datasets = []
 
-        # store dataset to filesystem
-        with open(temp_dataset, 'w') as f:
-            f.write(dataset)
+        for dataset, suffix in zip([train_data, test_data], ['train', 'test']):
+            temp_dataset = f'{temp_path}/dataset_{suffix}.txt'
+
+            # store dataset to filesystem
+            with open(temp_dataset, 'w') as f:
+                f.write(dataset)
+
+                datasets.append(temp_dataset)
 
         with mlflow.start_run() as run:
             # Log train parameters and model results
             try:
                 mlflow.log_param('model_uuid', model_uuid)
-                mlflow.log_artifact(temp_dataset, 'datasets')
+
+                for dataset in datasets:
+                    mlflow.log_artifact(dataset, 'datasets')
 
                 for parameter in hyperparameters:
                     mlflow.log_param(parameter, hyperparameters[parameter])

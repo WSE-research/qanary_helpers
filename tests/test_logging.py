@@ -10,30 +10,39 @@ class MyTestCase(unittest.TestCase):
         self.mlflow_server = Popen(['mlflow', 'server', '--host', '0.0.0.0'])
 
         self.logger = MLFlowLogger()
-        with open('dataset.csv', 'w') as f:
+        with open('dataset_train.csv', 'w') as f:
             f.write('test1,test2\n0,1\n2,3')
+
+        with open('dataset_test.csv', 'w') as f:
+            f.write('test dataset')
 
     def tearDown(self) -> None:
         self.mlflow_server.kill()
         self.mlflow_server.wait()
-        os.remove('dataset.csv')
+        os.remove('dataset_train.csv')
+        os.remove('dataset_test.csv')
 
     def test_train_logging(self):
-        with open('dataset.csv') as f:
-            dataset = f.read()
+        with open('dataset_train.csv') as f:
+            train = f.read()
 
-        run_id = self.logger.log_train_results('test:latest', dataset, {'C': 0.5, 'balance': 'weighted'},
+        with open('dataset_test.csv') as f:
+            test = f.read()
+
+        run_id = self.logger.log_train_results('test:latest', train, test, {'C': 0.5, 'balance': 'weighted'},
                                                {'param1': 3}, {'acc': 0.9, 'F1': 0.7}, 'basic_component', 'NED',
                                                'CPU', 'SVM', 17.4597)
 
         run = mlflow.get_run(run_id)
 
-        artifact = mlflow.artifacts.download_artifacts(run_id=run_id, artifact_path='datasets/dataset.txt')
+        for dataset, suffix in zip([train, test], ['train', 'test']):
+            artifact = mlflow.artifacts.download_artifacts(run_id=run_id,
+                                                           artifact_path=f'datasets/dataset_{suffix}.txt')
 
-        with open(artifact) as f:
-            artifact_data = f.read()
+            with open(artifact) as f:
+                artifact_data = f.read()
 
-        self.assertEqual(dataset, artifact_data)
+            self.assertEqual(dataset, artifact_data)
 
         metrics = mlflow.artifacts.load_dict(f'{run.info.artifact_uri}/model_metrics.json')
         self.assertEqual(2, len(metrics))

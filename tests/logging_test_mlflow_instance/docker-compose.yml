@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+  mlflow:
+    build:
+      context: .
+      args:
+        MLFLOW_PORT_ARTIFACT: $MLFLOW_PORT_ARTIFACT
+        MLFLOW_USERNAME: $MLFLOW_USERNAME
+        MLFLOW_PASSWORD: $MLFLOW_PASSWORD
+    environment:
+      - MLFLOW_HOST=$MLFLOW_HOST
+      - MLFLOW_PORT=$MLFLOW_PORT
+      - MLFLOW_PORT_ARTIFACT=$MLFLOW_PORT_ARTIFACT
+      - MLFLOW_USERNAME=$MLFLOW_USERNAME
+      - MLFLOW_PASSWORD=$MLFLOW_PASSWORD
+    ports:
+      - "$MLFLOW_PORT:5000"
+      - "$MLFLOW_PORT_ARTIFACT:$MLFLOW_PORT_ARTIFACT"
+    volumes:
+      - artifacts:/home/mlflow
+volumes:
+  artifacts: {}

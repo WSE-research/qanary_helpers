@@ -20,7 +20,7 @@ def read_requirements():
 
 setuptools.setup(
     name="qanary-helpers",
-    version="0.1.3",
+    version="0.2.0",
     author="Andreas Both, Aleksandr Perevalov",
     author_email="andreas.both@htwk-leipzig.de, aleksandr.perevalov@hs-anhalt.de",
     description="A package that helps to build components for the Qanary Framework",

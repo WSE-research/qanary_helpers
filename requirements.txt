@@ -1,4 +1,6 @@
 flask
-setuptools==49.6.0
+setuptools
 requests
-SPARQLWrapper==1.8.5
+SPARQLWrapper
+mlflow
+pysftp

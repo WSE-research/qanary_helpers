@@ -16,7 +16,7 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
     questions = list()
     query = """
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        SELECT (?s AS ?questionURI) (URI(CONCAT(STR(?s),"/raw")) AS ?questionURIraw)
+        SELECT DISTINCT (?s AS ?questionURI)
         FROM <{uri}> 
         WHERE {{
             ?s ?p ?o . 
@@ -26,16 +26,18 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
 
     results = select_from_triplestore(triplestore_endpoint, query)
     for result in results["results"]["bindings"]:
+        question_uri = result['questionURI']['value']
+        question_raw = question_uri + "/raw"
         logging.info("found: questionURI={0}  questionURIraw={1}".format(
-            result['questionURI']['value'],
-            result['questionURIraw']['value']
+            question_uri,
+            question_raw
         ))
-        question_text = requests.get(result['questionURIraw']['value'].replace(
+        question_text = requests.get(question_raw.replace(
             "localhost", urlparse(triplestore_endpoint).hostname)
         )
         logging.info("found question: \"{0}\"".format(question_text.text))
-        questions.append({"uri": result['questionURI']['value'], "text": question_text.text})
-    
+        questions.append({"uri": question_uri, "text": question_text.text})
+
     return questions
 
 
@@ -46,7 +48,7 @@ def select_from_triplestore(triplestore_endpoint, sparql_query):
     Keyword arguments:
     triplestore_endpoint -- URL of the triplestore endpoint
     sparql_query -- a query to execute on the endpoint
-    """ 
+    """
     # required for Stardog
     return query_triplestore(triplestore_endpoint+"/query", sparql_query)
 
@@ -58,7 +60,7 @@ def insert_into_triplestore(triplestore_endpoint, sparql_query):
     Keyword arguments:
     triplestore_endpoint -- URL of the triplestore endpoint
     sparql_query -- a query to execute on the endpoint
-    """ 
+    """
     # required for Stardog
     return query_triplestore(triplestore_endpoint+"/update", sparql_query)
 
@@ -72,25 +74,28 @@ def query_triplestore(triplestore_endpoint, sparql_query):
     sparql_query -- a query to execute on the endpoint
     """
     triplestore_endpoint_parsed = urlparse(triplestore_endpoint)
-    triplestore_endpoint_parsed_split = re.split("^(\w+):(\w+)@(.*)$", triplestore_endpoint_parsed.netloc)
+    triplestore_endpoint_parsed_split = re.split(
+        "^(\w+):(\w+)@(.*)$", triplestore_endpoint_parsed.netloc)
     if len(triplestore_endpoint_parsed_split) > 1:
         # qanary v2 and lower
         username = triplestore_endpoint_parsed_split[1]
         password = triplestore_endpoint_parsed_split[2]
         triplestore_endpoint_new = triplestore_endpoint_parsed.scheme + "://" + triplestore_endpoint_parsed_split[3] + \
-                                triplestore_endpoint_parsed.path
+            triplestore_endpoint_parsed.path
         sparql = SPARQLWrapper(triplestore_endpoint_new)
         sparql.setCredentials(username, password)
-        logging.info("found: endpoint=%s,  username=%s,  password=%s" % (triplestore_endpoint_new, username, password))
+        logging.info("found: endpoint=%s,  username=%s,  password=%s" %
+                     (triplestore_endpoint_new, username, password))
     else:
         # qanary v3
         triplestore_endpoint_new = re.sub('/query$', '', triplestore_endpoint)
-        triplestore_endpoint_new = re.sub('/update$', '', triplestore_endpoint_new)
+        triplestore_endpoint_new = re.sub(
+            '/update$', '', triplestore_endpoint_new)
         sparql = SPARQLWrapper(triplestore_endpoint_new)
         logging.info("found: endpoint=%s" % triplestore_endpoint_new)
 
     logging.info("execute SPARQL query:\n%s" % sparql_query)
-    
+
     sparql.setQuery(sparql_query)
     sparql.setReturnFormat(JSON)
     sparql.setMethod("POST")

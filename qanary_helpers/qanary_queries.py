@@ -16,11 +16,10 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
     questions = list()
     query = """
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        SELECT DISTINCT (?s AS ?questionURI)
+        SELECT DISTINCT ?questionURI
         FROM <{uri}> 
         WHERE {{
-            ?s ?p ?o . 
-            ?s rdf:type <http://www.wdaqua.eu/qa#Question> .
+            ?questionURI rdf:type <http://www.wdaqua.eu/qa#Question> .
         }}
     """.format(uri=graph)
 

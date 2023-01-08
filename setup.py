@@ -1,7 +1,8 @@
 import setuptools
 import os
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+__location__ = os.path.realpath(os.path.join(
+    os.getcwd(), os.path.dirname(__file__)))
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -20,10 +21,10 @@ def read_requirements():
 
 setuptools.setup(
     name="qanary-helpers",
-    version="0.2.0",
+    version="0.2.1",
     author="Andreas Both, Aleksandr Perevalov",
     author_email="andreas.both@htwk-leipzig.de, aleksandr.perevalov@hs-anhalt.de",
-    description="A package that helps to build components for the Qanary Framework",
+    description="A package that helps to build Python components for the Qanary Question Answering framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Perevalov/qanary_helpers",
@@ -40,4 +41,3 @@ setuptools.setup(
     python_requires='>=3.7',
     **read_requirements()
 )
-

@@ -23,7 +23,7 @@ setuptools.setup(
     name="qanary-helpers",
     version="0.3.0",
     author="Andreas Both, Aleksandr Perevalov",
-    author_email="andreas.both@htwk-leipzig.de, aleksandr.perevalov@hs-anhalt.de",
+    author_email="andreas.both@htwk-leipzig.de, aleksandr.perevalov@htwk-leipzig.de",
     description="A package that helps to build Python components for the Qanary Question Answering framework",
     long_description=long_description,
     long_description_content_type="text/markdown",

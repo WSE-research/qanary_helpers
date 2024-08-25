@@ -5,15 +5,27 @@ from urllib.parse import urlparse
 import re
 
 
-def get_text_question_from_uri(question_uri, triplestore_endpoint):
+def get_text_question_from_uri(triplestore_endpoint: str, question_uri: str) -> str:
+    """Retrieves the textual representation for a question identified by a URI
+
+    Keyword arguments:
+    triplestore_endpoint (str) -- URL of the triplestore endpoint
+    question_uri (str) -- URI of the question
+
+    Returns:
+    str -- The question text
+
+    """
     question_raw = question_uri + "/raw"
     logging.info("found: questionURI={0}  questionURIraw={1}".format(
         question_uri,
         question_raw
     ))
-    question_text = requests.get(question_raw.replace(
-        "localhost", urlparse(triplestore_endpoint).hostname)
-    )
+    hostname = urlparse(triplestore_endpoint).hostname
+    if hostname == None:
+        raise ValueError("No valid host name could be extracted from the supplied triplestore_endpoint: {0}"
+                         .format(triplestore_endpoint))
+    question_text = requests.get(question_raw.replace("localhost", hostname))
     return question_text.text
 
 
@@ -38,7 +50,7 @@ def get_text_question_in_graph(triplestore_endpoint, graph):
     results = select_from_triplestore(triplestore_endpoint, query)
     for result in results["results"]["bindings"]:
         question_uri = result['questionURI']['value']
-        question_text = get_text_question_from_uri(question_uri, triplestore_endpoint)
+        question_text = get_text_question_from_uri(triplestore_endpoint, question_uri)
         logging.info("found question: \"{0}\"".format(question_text))
         questions.append({"uri": question_uri, "text": question_text})
 

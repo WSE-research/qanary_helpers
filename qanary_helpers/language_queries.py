@@ -2,8 +2,17 @@ from qanary_helpers.qanary_queries import select_from_triplestore, get_text_ques
 import logging
 
 
-class question_text_with_language:
+class QuestionTextWithLanguage:
+    """Holds data of question texts in the triplestore that have an associated language, either through previous translation or language recognition."""
+
     def __init__(self, uri: str, text: str, lang: str):
+        """Inits QuestionTextWithLanguage with question URI, question text and question language.
+
+        Keyword arguments:
+        uri (str) -- URI of the question inside of the triplestore
+        text (str) -- Textual representation of the question
+        lang (str) -- Language of the question text
+        """
         self.uri = uri
         self.text = text
         self.lang = lang
@@ -18,7 +27,17 @@ class question_text_with_language:
         return self.lang
 
 
-def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, graph_uri: str, lang: str) -> list[question_text_with_language]:
+def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, graph_uri: str, lang: str) -> list[QuestionTextWithLanguage]:
+    """Retrieves question texts from the triplestore for which a specific language has been detected.
+
+    Keyword arguments:
+    triplestore_endpoint (str) -- URL of the triplestore endpoint
+    graph_uri (str) -- URI of the graph to query inside of the triplestore
+    lang (str) -- Expected detected language
+
+    Returns:
+    list -- A list of appropriate question_text_with_language objects with information from the triplestore.
+    """
     source_texts = list()
     sparql_find_ld = """
         PREFIX qa: <http://www.wdaqua.eu/qa#>
@@ -43,12 +62,22 @@ def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, g
     for result in results["results"]["bindings"]:
         question_uri = result["hasTarget"]["value"]
         question_text = get_text_question_from_uri(question_uri, triplestore_endpoint)
-        source_texts.append(question_text_with_language(uri=question_uri, text=question_text, lang=lang))
+        source_texts.append(QuestionTextWithLanguage(uri=question_uri, text=question_text, lang=lang))
 
     return source_texts
 
 
-def get_translated_texts_in_triplestore(triplestore_endpoint: str, graph_uri: str, lang: str) -> list[question_text_with_language]:
+def get_translated_texts_in_triplestore(triplestore_endpoint: str, graph_uri: str, lang: str) -> list[QuestionTextWithLanguage]:
+    """Retrieves question texts from the triplestore that were translated into a specific language.
+
+    Keyword arguments:
+    triplestore_endpoint (str) -- URL of the triplestore endpoint
+    graph_uri (str) -- URI of the graph to query inside of the triplestore
+    lang (str) -- Target language of the translation
+
+    Returns:
+    list -- A list of appropriate question_text_with_language objects with information from the triplestore.
+    """
     source_texts = list()
     sparql_find_ld = """
         PREFIX qa: <http://www.wdaqua.eu/qa#>
@@ -72,12 +101,25 @@ def get_translated_texts_in_triplestore(triplestore_endpoint: str, graph_uri: st
     for result in results["results"]["bindings"]:
         question_uri = result["hasTarget"]["value"]
         question_text = result["hasBody"]["value"]
-        source_texts.append(question_text_with_language(question_uri, question_text, lang))
+        source_texts.append(QuestionTextWithLanguage(question_uri, question_text, lang))
 
     return source_texts
 
 
 def create_annotation_of_question_translation(graph_uri: str, question_uri: str, translation: str, translation_language: str, app_name: str) -> str:
+    """Creates an INSERT SPARQL query to annotate the question translation in the triplestore.
+
+    Keyword Arguments:
+    graph_uri (str) -- URI of the graph to query inside of the triplestore
+    question_uri (str) -- URI of the question inside of the triplestore
+    translation (str) -- Translation of the question text
+    translation_language (str) -- Target language of the translation
+    app_name (str) -- Name of the component making the annotation
+
+    Returns:
+    str -- The generated INSERT query
+    """
+
     SPARQLqueryAnnotationOfQuestionTranslation = """
         PREFIX qa: <http://www.wdaqua.eu/qa#>
         PREFIX oa: <http://www.w3.org/ns/openannotation/core/>
@@ -109,6 +151,18 @@ def create_annotation_of_question_translation(graph_uri: str, question_uri: str,
 
 
 def create_annotation_of_question_language(graph_uri: str, question_uri: str, language: str, app_name: str) -> str:
+    """Creates an INSERT SPARQL query to annotate the language of a question in the triplestore.
+
+    Keyword Arguments:
+    graph_uri (str) -- URI of the graph to query inside of the triplestore
+    question_uri (str) -- URI of the question inside of the triplestore
+    language (str) -- Determined language of the question
+    app_name (str) -- Name of the component making the annotation
+
+    Returns:
+    str -- The generated INSERT query
+    """
+
     SPARQLqueryAnnotationOfQuestionLanguage = """
         PREFIX qa: <http://www.wdaqua.eu/qa#>
         PREFIX oa: <http://www.w3.org/ns/openannotation/core/>

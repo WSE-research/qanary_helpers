@@ -36,7 +36,7 @@ def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, g
     lang (str) -- Expected detected language
 
     Returns:
-    list -- A list of appropriate question_text_with_language objects with information from the triplestore.
+    list -- A list of appropriate QuestionTextWithLanguage objects with information from the triplestore.
     """
     source_texts = list()
     sparql_find_ld = """
@@ -52,7 +52,7 @@ def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, g
           oa:hasBody ?hasBody ;
           oa:annotatedBy ?annotatedBy ;
           oa:annotatedAt ?annotatedAt .
-        FILTER(STR(?hasBody) = {lang})
+        FILTER(STR(?hasBody) = \"{lang}\")
         }}
     """.format(
         graph = graph_uri,
@@ -61,7 +61,7 @@ def get_texts_with_detected_language_in_triplestore(triplestore_endpoint: str, g
     results = select_from_triplestore(triplestore_endpoint, sparql_find_ld)
     for result in results["results"]["bindings"]:
         question_uri = result["hasTarget"]["value"]
-        question_text = get_text_question_from_uri(question_uri, triplestore_endpoint)
+        question_text = get_text_question_from_uri(triplestore_endpoint=triplestore_endpoint, question_uri=question_uri)
         source_texts.append(QuestionTextWithLanguage(uri=question_uri, text=question_text, lang=lang))
 
     return source_texts
@@ -76,7 +76,7 @@ def get_translated_texts_in_triplestore(triplestore_endpoint: str, graph_uri: st
     lang (str) -- Target language of the translation
 
     Returns:
-    list -- A list of appropriate question_text_with_language objects with information from the triplestore.
+    list -- A list of appropriate QuestionTextWithLanguage objects with information from the triplestore.
     """
     source_texts = list()
     sparql_find_ld = """
@@ -91,7 +91,7 @@ def get_translated_texts_in_triplestore(triplestore_endpoint: str, graph_uri: st
                           oa:hasBody ?hasBody ;
                           oa:annotatedBy ?annotatedBy ;
                           oa:annotatedAt ?annotatedAt .
-            FILTER(lang(?hasBody) = {lang}).
+            FILTER(lang(?hasBody) = \"{lang}\").
         }}
     """.format(
         graph = graph_uri,
@@ -132,7 +132,6 @@ def create_annotation_of_question_translation(graph_uri: str, question_uri: str,
                 oa:hasBody "{translation_result}"@{target_lang} ;
                 oa:annotatedBy <urn:qanary:{app_name}> ;
                 oa:annotatedAt ?time .
-
             }}
         }}
         WHERE {{

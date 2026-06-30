@@ -22,7 +22,7 @@ def get_text_question_from_uri(triplestore_endpoint: str, question_uri: str) -> 
         question_raw
     ))
     hostname = urlparse(triplestore_endpoint).hostname
-    if hostname == None:
+    if hostname is None:
         raise ValueError("No valid host name could be extracted from the supplied triplestore_endpoint: {0}"
                          .format(triplestore_endpoint))
     question_text = requests.get(question_raw.replace("localhost", hostname))
@@ -91,7 +91,7 @@ def query_triplestore(triplestore_endpoint, sparql_query):
     """
     triplestore_endpoint_parsed = urlparse(triplestore_endpoint)
     triplestore_endpoint_parsed_split = re.split(
-        "^(\w+):(\w+)@(.*)$", triplestore_endpoint_parsed.netloc)
+        r"^(\w+):(\w+)@(.*)$", triplestore_endpoint_parsed.netloc)
     if len(triplestore_endpoint_parsed_split) > 1:
         # qanary v2 and lower
         username = triplestore_endpoint_parsed_split[1]

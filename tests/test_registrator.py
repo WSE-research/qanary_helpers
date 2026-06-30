@@ -39,4 +39,4 @@ def test_admin_server_url():
 
 
 def test_is_stopped():
-    assert registrator_thread.is_stopped() == False
+    assert registrator_thread.is_stopped() is False

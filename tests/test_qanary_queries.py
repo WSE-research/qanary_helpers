@@ -1,10 +1,7 @@
+import pytest
 from qanary_helpers.qanary_queries import query_triplestore, select_from_triplestore
-import logging
-from SPARQLWrapper import SPARQLWrapper, JSON
-import requests
-from urllib.parse import urlparse
-import re
 
+@pytest.mark.network
 def test_query_triplestore():
     triplestore_endpoint = "https://dbpedia.org/sparql"
     
@@ -21,6 +18,7 @@ def test_query_triplestore():
     query_triplestore(triplestore_endpoint + '/query', sparql_query)
     query_triplestore(triplestore_endpoint + '/update', sparql_query)
 
+@pytest.mark.network
 def test_select_from_triplestore():
     triplestore_endpoint = "https://dbpedia.org/sparql"
     
